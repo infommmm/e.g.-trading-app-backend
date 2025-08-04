@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eryvium - Investor Presentation</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .slide h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .slide h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #FFD700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .slide h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #87CEEB;
+        }
+
+        .investment-amount {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #00FF7F;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin: 30px 0;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .highlight-box {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #00FF7F;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            color: #87CEEB;
+            margin-top: 10px;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            margin: 40px auto;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .process-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 40px 0;
+            max-width: 1200px;
+        }
+
+        .process-step {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            margin: 10px;
+            position: relative;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+
+        .process-step::after {
+            content: '→';
+            position: absolute;
+            right: -50px;
+            font-size: 2rem;
+            color: #FFD700;
+        }
+
+        .process-step:last-child::after {
+            display: none;
+        }
+
+        .competitive-table {
+            width: 100%;
+            max-width: 1000px;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .competitive-table th,
+        .competitive-table td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .competitive-table th {
+            background: rgba(255,215,0,0.2);
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .check-mark {
+            color: #00FF7F;
+            font-size: 1.5rem;
+        }
+
+        .x-mark {
+            color: #FF6B6B;
+            font-size: 1.5rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+            max-width: 1200px;
+        }
+
+        .team-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: left;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .team-name {
+            font-size: 1.5rem;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+
+        .team-title {
+            font-size: 1.2rem;
+            color: #87CEEB;
+            margin-bottom: 15px;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: rgba(255,215,0,0.8);
+            color: #000;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #FFD700;
+            transform: scale(1.1);
+        }
+
+        .slide-number {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+        }
+
+        .logo {
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FF6B6B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #87CEEB;
+            margin-bottom: 40px;
+        }
+
+        .contact-info {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .bullet-points {
+            text-align: left;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        .bullet-points li {
+            margin: 15px 0;
+            font-size: 1.3rem;
+            list-style: none;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .bullet-points li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #00FF7F;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .financial-table {
+            width: 100%;
+            max-width: 900px;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .financial-table th,
+        .financial-table td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .financial-table th {
+            background: rgba(0,255,127,0.2);
+            font-weight: bold;
+            color: #00FF7F;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #00FF7F, #32CD32);
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- Slide 1: Title -->
+    <div class="slide" id="slide1">
+        <div class="slide-number">1/21</div>
+        <div class="logo">ERYVIUM</div>
+        <h2>Transforming Manganese Processing for a Sustainable Future</h2>
+        <div class="investment-amount">€12 MILLION</div>
+        <p class="subtitle">INVESTMENT OPPORTUNITY</p>
+        <p style="font-size: 1.3rem; margin: 20px 0;">Revolutionizing Critical Metal Supply Chains</p>
+        <div class="contact-info">
+            <strong>Eryvium GmbH</strong><br>
+            Hamburg, Germany<br>
+            📧 info@michaeligroup.com<br>
+            📞 +49 160 5856306
+        </div>
+    </div>
+
+    <!-- Slide 2: Executive Summary -->
+    <div class="slide" id="slide2">
+        <div class="slide-number">2/21</div>
+        <h1>THE OPPORTUNITY</h1>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number">€32.5B</span>
+                <div class="stat-label">Global Market by 2032</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">4x</span>
+                <div class="stat-label">EU EV Battery Growth</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">€110M</span>
+                <div class="stat-label">Revenue by 2029</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">35%+</span>
+                <div class="stat-label">Expected IRR</div>
+            </div>
+        </div>
+        <div class="highlight-box">
+            <h3>🏭 Our Solution</h3>
+            <p style="font-size: 1.2rem;">State-of-the-art beneficiation facility in South Africa's Northern Cape SEZ</p>
+            <p style="font-size: 1.1rem; margin-top: 15px;">Transform low-grade ore (26-35% Mn) into premium battery-grade (48-50% Mn)</p>
+        </div>
+    </div>
+
+    <!-- Slide 3: The Problem -->
+    <div class="slide" id="slide3">
+        <div class="slide-number">3/21</div>
+        <h1>THE PROBLEM</h1>
+        <h2>Critical Supply Chain Challenges</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number">90%</span>
+                <div class="stat-label">Chinese Manganese Refining</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">30M</span>
+                <div class="stat-label">EU EVs by 2030</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">40%</span>
+                <div class="stat-label">Local Processing Mandate</div>
+            </div>
+        </div>
+        <div class="highlight-box">
+            <ul class="bullet-points">
+                <li>Geopolitical supply risks threaten European manufacturers</li>
+                <li>Small miners lack access to premium processing technology</li>
+                <li>Traditional methods are water-intensive and environmentally harmful</li>
+                <li>Infrastructure barriers prevent access to premium markets</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Slide 4: Our Solution -->
+    <div class="slide" id="slide4">
+        <div class="slide-number">4/21</div>
+        <h1>ERYVIUM: THE GAME CHANGER</h1>
+        <div class="process-flow">
+            <div class="process-step">
+                <div>AI</div>
+                <div>SORTING</div>
+            </div>
+            <div class="process-step">
+                <div>DRY</div>
+                <div>PROCESS</div>
+            </div>
+            <div class="process-step">
+                <div>MAGNETIC</div>
+                <div>SEPARATION</div>
+            </div>
+            <div class="process-step">
+                <div>WATER</div>
+                <div>RECYCLING</div>
+            </div>
+            <div class="process-step">
+                <div>SOLAR</div>
+                <div>POWER</div>
+            </div>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number">+25%</span>
+                <div class="stat-label">Grade Improvement</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">90%</span>
+                <div class="stat-label">Water Reduction</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">120%</span>
+                <div class="stat-label">Solar Energy</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">2,500</span>
+                <div class="stat-label">TPD Capacity</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Market Opportunity -->
+    <div class="slide" id="slide5">
+        <div class="slide-number">5/21</div>
+        <h1>MASSIVE MARKET TAILWINDS</h1>
+        <div class="chart-container">
+            <canvas id="marketChart"></canvas>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number">🇪🇺</span>
+                <div class="stat-label">Europe - Primary Focus</div>
+                <p style="font-size: 0.9rem; margin-top: 10px;">40% local processing by 2030</p>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">🇨🇳</span>
+                <div class="stat-label">China - Largest Consumer</div>
+                <p style="font-size: 0.9rem; margin-top: 10px;">Supply constraints & diversification</p>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">🇮🇳</span>
+                <div class="stat-label">India - Fastest Growing</div>
+                <p style="font-size: 0.9rem; margin-top: 10px;">6% steel growth annually</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Competitive Advantage -->
+    <div class="slide" id="slide6">
+        <div class="slide-number">6/21</div>
+        <h1>WHY ERYVIUM WINS</h1>
+        <table class="competitive-table">
+            <thead>
+                <tr>
+                    <th>Factor</th>
+                    <th>Eryvium</th>
+                    <th>Traditional</th>
+                    <th>Chinese</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Location</strong></td>
+                    <td><span class="check-mark">✅</span> Source proximity</td>
+                    <td><span class="x-mark">❌</span> Distant processing</td>
+                    <td><span class="x-mark">❌</span> Import dependent</td>
+                </tr>
+                <tr>
+                    <td><strong>Technology</strong></td>
+                    <td><span class="check-mark">✅</span> AI + Dry process</td>
+                    <td><span class="x-mark">❌</span> Wet processing</td>
+                    <td><span style="color: #FFA500;">⚠️</span> Mixed methods</td>
+                </tr>
+                <tr>
+                    <td><strong>ESG</strong></td>
+                    <td><span class="check-mark">✅</span> Zero waste + Solar</td>
+                    <td><span class="x-mark">❌</span> High water use</td>
+                    <td><span class="x-mark">❌</span> Environmental concerns</td>
+                </tr>
+                <tr>
+                    <td><strong>Supply Chain</strong></td>
+                    <td><span class="check-mark">✅</span> Direct to market</td>
+                    <td><span class="x-mark">❌</span> Multiple intermediaries</td>
+                    <td><span class="x-mark">❌</span> Geopolitical risk</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Slide 7: Financial Projections -->
+    <div class="slide" id="slide7">
+        <div class="slide-number">7/21</div>
+        <h1>COMPELLING FINANCIAL RETURNS</h1>
+        <div class="chart-container">
+            <canvas id="financialChart"></canvas>
+        </div>
+        <table class="financial-table">
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>2026</th>
+                    <th>2027</th>
+                    <th>2028</th>
+                    <th>2029</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Revenue (€M)</strong></td>
+                    <td>45.0</td>
+                    <td>87.0</td>
+                    <td>97.0</td>
+                    <td>110.0</td>
+                </tr>
+                <tr>
+                    <td><strong>EBITDA (€M)</strong></td>
+                    <td>7.2</td>
+                    <td>16.8</td>
+                    <td>18.6</td>
+                    <td>21.0</td>
+                </tr>
+                <tr>
+                    <td><strong>EBITDA Margin</strong></td>
+                    <td>16.0%</td>
+                    <td>19.3%</td>
+                    <td>19.2%</td>
+                    <td>19.1%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Slide 8: Use of Funds -->
+    <div class="slide" id="slide8">
+        <div class="slide-number">8/21</div>
+        <h1>€12 MILLION INVESTMENT</h1>
+        <h2>Capital Deployment Strategy</h2>
+        <div class="chart-container">
+            <canvas id="fundsChart"></canvas>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number">€4.8M</span>
+                <div class="stat-label">Equipment (40%)</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">€3.6M</span>
+                <div class="stat-label">Infrastructure (30%)</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">€1.8M</span>
+                <div class="stat-label">Working Capital (15%)</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">€1.2M</span>
+                <div class="stat-label">ESG & Certification (10%)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 9: Management Team -->
+    <div class="slide" id="slide9">
+        <div class="slide-number">9/21</div>
+        <h1>WORLD-CLASS LEADERSHIP</h1>
+        <div class="team-grid">
+            <div class="team-card">
+                <div class="team-name">SHAY MICHAELI</div>
+                <div class="team-title">Founder & CEO</div>
+                <p>20+ years commodity trading & project development. Visionary leader behind Eryvium's strategic growth.</p>
+            </div>
+            <div class="team-card">
+                <div class="team-name">RONI MICHAELI</div>
+                <div class="team-title">Chief Operating Officer</div>
+                <p>Large-scale mining operations specialist. Supply chain optimization expert.</p>
+            </div>
+            <div class="team-card">
+                <div class="team-name">MICHAEL VAN DER MERWE</div>
+                <div class="team-title">Chief Technical Officer</div>
+                <p>AI-based ore sorting and beneficiation expert. Technology integration leadership.</p>
+            </div>
+            <div class="team-card">
+                <div class="team-name">ELI BIRD</div>
+                <div class="team-title">Chief Financial Officer</div>
+                <p>15+ years financial strategy experience. Capital allocation and investor relations.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 10: Call to Action -->
+    <div class="slide" id="slide10">
+        <div class="slide-number">10/21</div>
+        <h1>JOIN THE MANGANESE REVOLUTION</h1>
+        <div class="highlight-box">
+            <h2>Why Invest Now?</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">35%+</span>
+                    <div class="stat-label">Expected IRR</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">4-6x</span>
+                    <div class="stat-label">Investment Multiple</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">3.2</span>
+                    <div class="stat-label">Years Payback</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">Year 1</span>
+                    <div class="stat-label">Profitability</div>
+                </div>
+            </div>
+        </div>
+        <button class="cta-button" onclick="showContact()">INVEST NOW</button>
+        <div class="highlight-box">
+            <h3>Perfect Timing</h3>
+            <ul class="bullet-points">
+                <li>Market inflection point: EV adoption accelerating</li>
+                <li>Regulatory tailwinds: EU Critical Raw Materials Act</li>
+                <li>First-mover advantage: Only AI-powered dry beneficiation in Africa</li>
+                <li>Technology maturity: Proven solutions ready for scale</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation">
+        <button class="nav-btn" onclick="previousSlide()">←</button>
+        <button class="nav-btn" onclick="nextSlide()">→</button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 10;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.style.display = 'none');
+            
+            if (n > totalSlides) currentSlide = 1;
+            if (n < 1) currentSlide = totalSlides;
+            
+            document.getElementById(`slide${currentSlide}`).style.display = 'flex';
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function previousSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        function showContact() {
+            alert('Contact Eryvium GmbH:\n\nShay Michaeli - CEO\nEmail: shay@michaeligroup.com\nPhone: +49 160 5856306\n\nReady to transform manganese processing together!');
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight' || event.key === ' ') {
+                nextSlide();
+            } else if (event.key === 'ArrowLeft') {
+                previousSlide();
+            }
+        });
+
+        // Initialize charts
+        window.onload = function() {
+            showSlide(1);
+            
+            // Market Growth Chart
+            const ctx1 = document.getElementById('marketChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['2024', '2026', '2028', '2030', '2032'],
+                    datasets: [{
+                        label: 'Global Manganese Market (€B)',
+                        data: [22, 26, 29, 31, 32.5],
+                        borderColor: '#00FF7F',
+                        backgroundColor: 'rgba(0,255,127,0.1)',
+                        borderWidth: 3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: 'white' }
+                        }
+                    },
+                    scales: {
+                        x: { 
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.2)' }
+                        },
+                        y: { 
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.2)' }
+                        }
+                    }
+                }
+            });
+
+            // Financial Projections Chart
+            const ctx2 = document.getElementById('financialChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['2026', '2027', '2028', '2029'],
+                    datasets: [{
+                        label: 'Revenue (€M)',
+                        data: [45, 87, 97, 110],
+                        backgroundColor: '#FFD700',
+                        borderRadius: 10
+                    }, {
+                        label: 'EBITDA (€M)',
+                        data: [7.2, 16.8, 18.6, 21.0],
+                        backgroundColor: '#00FF7F',
+                        borderRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: 'white' }
+                        }
+                    },
+                    scales: {
+                        x: { 
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.2)' }
+                        },
+                        y: { 
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.2)' }
+                        }
+                    }
+                }
+            });
+
+            // Use of Funds Chart
+            const ctx3 = document.getElementById('fundsChart').getContext('2d');
+            new Chart(ctx3, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Equipment (40%)', 'Infrastructure (30%)', 'Working Capital (15%)', 'ESG & Certification (10%)', 'Contingency (5%)'],
+                    datasets: [{
+                        data: [4.8, 3.6, 1.8, 1.2, 0.6],
+                        backgroundColor: ['#FFD700', '#00FF7F', '#87CEEB', '#FFA500', '#FF6B6B'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { 
+                                color: 'white',
+                                padding: 20,
+                                font: { size: 12 }
+                            }
+                        }
+                    }
+                }
+            });
+        };
+    </script>
+</body>
+</html>
