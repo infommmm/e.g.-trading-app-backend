@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Using SQLite for simplicity
+ datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Commodity {
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique
+  name        String
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  prices      Price[]
+  articles    Article[]
+  tradeStats  TradeStat[]
+}
+
+model Country {
+  id          Int       @id @default(autoincrement())
+  iso2        String    @unique
+  name        String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  ports       Port[]
+  tradeStats  TradeStat[]
+}
+
+model Port {
+  id          Int       @id @default(autoincrement())
+  name        String
+  code        String?
+  countryId   Int
+  country     Country   @relation(fields: [countryId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  prices      Price[]
+
+  @@unique([name, countryId])
+}
+
+enum PriceType {
+  FOB
+  CIF
+  PORT
+  SPOT
+  SALES
+}
+
+model Price {
+  id           Int        @id @default(autoincrement())
+  commodityId  Int
+  commodity    Commodity  @relation(fields: [commodityId], references: [id])
+  countryId    Int?
+  country      Country?   @relation(fields: [countryId], references: [id])
+  portId       Int?
+  port         Port?      @relation(fields: [portId], references: [id])
+  type         PriceType
+  currency     String     @default("USD")
+  value        Float
+  unit         String     @default("USD/ton")
+  observedAt   DateTime   @default(now())
+  source       String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([commodityId, countryId, portId, type, observedAt])
+}
+
+enum ArticleCategory {
+  BLOG
+  NEWS
+  ARTICLE
+  REPORT
+}
+
+model Article {
+  id           Int              @id @default(autoincrement())
+  commodityId  Int?
+  commodity    Commodity?       @relation(fields: [commodityId], references: [id])
+  title        String
+  slug         String           @unique
+  category     ArticleCategory
+  summary      String?
+  content      String
+  author       String?
+  publishedAt  DateTime         @default(now())
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}
+
+enum TradeType {
+  EXPORT
+  IMPORT
+}
+
+model TradeStat {
+  id           Int        @id @default(autoincrement())
+  commodityId  Int
+  commodity    Commodity  @relation(fields: [commodityId], references: [id])
+  countryId    Int
+  country      Country    @relation(fields: [countryId], references: [id])
+  type         TradeType
+  year         Int
+  quantityMt   Float      // million tons or tons depending; interpreted by unit
+  valueUsd     Float
+  unit         String      @default("ton")
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@unique([commodityId, countryId, type, year])
+  @@index([commodityId, type, year])
+}
