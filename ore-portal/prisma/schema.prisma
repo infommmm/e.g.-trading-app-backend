@@ -3,45 +3,46 @@ generator client {
 }
 
 // Using SQLite for simplicity
- datasource db {
+datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 model Commodity {
-  id          Int       @id @default(autoincrement())
-  slug        String    @unique
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
   name        String
   description String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  prices      Price[]
-  articles    Article[]
-  tradeStats  TradeStat[]
+  prices     Price[]
+  articles   Article[]
+  tradeStats TradeStat[]
 }
 
 model Country {
-  id          Int       @id @default(autoincrement())
-  iso2        String    @unique
-  name        String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id        Int      @id @default(autoincrement())
+  iso2      String   @unique
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  ports       Port[]
-  tradeStats  TradeStat[]
+  ports      Port[]
+  tradeStats TradeStat[]
+  prices     Price[]
 }
 
 model Port {
-  id          Int       @id @default(autoincrement())
-  name        String
-  code        String?
-  countryId   Int
-  country     Country   @relation(fields: [countryId], references: [id])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id        Int      @id @default(autoincrement())
+  name      String
+  code      String?
+  countryId Int
+  country   Country  @relation(fields: [countryId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  prices      Price[]
+  prices Price[]
 
   @@unique([name, countryId])
 }
@@ -55,21 +56,21 @@ enum PriceType {
 }
 
 model Price {
-  id           Int        @id @default(autoincrement())
-  commodityId  Int
-  commodity    Commodity  @relation(fields: [commodityId], references: [id])
-  countryId    Int?
-  country      Country?   @relation(fields: [countryId], references: [id])
-  portId       Int?
-  port         Port?      @relation(fields: [portId], references: [id])
-  type         PriceType
-  currency     String     @default("USD")
-  value        Float
-  unit         String     @default("USD/ton")
-  observedAt   DateTime   @default(now())
-  source       String?
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  id          Int       @id @default(autoincrement())
+  commodityId Int
+  commodity   Commodity @relation(fields: [commodityId], references: [id])
+  countryId   Int?
+  country     Country?  @relation(fields: [countryId], references: [id])
+  portId      Int?
+  port        Port?     @relation(fields: [portId], references: [id])
+  type        PriceType
+  currency    String    @default("USD")
+  value       Float
+  unit        String    @default("USD/ton")
+  observedAt  DateTime  @default(now())
+  source      String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@index([commodityId, countryId, portId, type, observedAt])
 }
@@ -82,18 +83,18 @@ enum ArticleCategory {
 }
 
 model Article {
-  id           Int              @id @default(autoincrement())
-  commodityId  Int?
-  commodity    Commodity?       @relation(fields: [commodityId], references: [id])
-  title        String
-  slug         String           @unique
-  category     ArticleCategory
-  summary      String?
-  content      String
-  author       String?
-  publishedAt  DateTime         @default(now())
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  id          Int             @id @default(autoincrement())
+  commodityId Int?
+  commodity   Commodity?      @relation(fields: [commodityId], references: [id])
+  title       String
+  slug        String          @unique
+  category    ArticleCategory
+  summary     String?
+  content     String
+  author      String?
+  publishedAt DateTime        @default(now())
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 }
 
 enum TradeType {
@@ -102,18 +103,18 @@ enum TradeType {
 }
 
 model TradeStat {
-  id           Int        @id @default(autoincrement())
-  commodityId  Int
-  commodity    Commodity  @relation(fields: [commodityId], references: [id])
-  countryId    Int
-  country      Country    @relation(fields: [countryId], references: [id])
-  type         TradeType
-  year         Int
-  quantityMt   Float      // million tons or tons depending; interpreted by unit
-  valueUsd     Float
-  unit         String      @default("ton")
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  id          Int       @id @default(autoincrement())
+  commodityId Int
+  commodity   Commodity @relation(fields: [commodityId], references: [id])
+  countryId   Int
+  country     Country   @relation(fields: [countryId], references: [id])
+  type        TradeType
+  year        Int
+  quantityMt  Float // million tons or tons depending; interpreted by unit
+  valueUsd    Float
+  unit        String    @default("ton")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@unique([commodityId, countryId, type, year])
   @@index([commodityId, type, year])
