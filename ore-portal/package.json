@@ -11,12 +11,14 @@
     "prisma:migrate": "prisma migrate deploy",
     "db:seed": "node --import tsx ./prisma/seed.ts",
     "schedule": "node ./scripts/scheduler.js",
+    "tunnel": "node ./scripts/tunnel.js",
     "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.13.0",
     "chart.js": "^4.5.0",
     "date-fns": "^4.1.0",
+    "localtunnel": "^2.0.2",
     "next": "15.4.6",
     "node-cron": "^4.2.1",
     "openai": "^5.12.2",
